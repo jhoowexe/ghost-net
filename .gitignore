@@ -1,0 +1,21 @@
+# Logs e arquivos de execução
+*.log
+*.pid
+*.save
+
+# Arquivos temporários
+*.swp
+*.tmp
+*~
+
+# Configurações locais (não versionar perfis de VPN)
+*.ovpn
+*.conf
+
+# Cache do sistema
+.cache/
+.DS_Store
+Thumbs.db
+
+# Arquivos de build/teste
+*.bak
