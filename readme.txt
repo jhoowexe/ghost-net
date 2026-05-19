@@ -90,6 +90,3 @@ sudo ghost-net
 ## ⚠️ Aviso
 Este script é para fins educacionais e de privacidade. Não garante anonimato absoluto e não deve ser usado para atividades ilegais. Combine sempre com boas práticas de segurança digital.
 
----
-
-✍️ Autor: [SEU_NOME](https://github.com/SEU_USUARIO)
