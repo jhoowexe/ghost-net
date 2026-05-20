@@ -15,13 +15,13 @@ Clone o repositório e torne o script executável:
 ```bash
 git clone https://github.com/SEU_USUARIO/ghost-net.git
 cd ghost-net
-chmod +x ghost-net.sh
+chmod +x ghost_net.sh
 ```
 
 Ou baixe direto:
 ```bash
-curl -L https://raw.githubusercontent.com/SEU_USUARIO/ghost-net/main/ghost-net.sh -o ghost-net.sh
-chmod +x ghost-net.sh
+curl -L https://raw.githubusercontent.com/SEU_USUARIO/ghost-net/main/ghost_net.sh -o ghost_net.sh
+chmod +x ghost_net.sh
 ```
 
 ---
@@ -38,7 +38,7 @@ sudo apt install -y openvpn tor macchanger iptables curl network-manager torsock
 ## 🖥️ Uso
 Execute o script com permissões de root:
 ```bash
-sudo ./ghost-net.sh
+sudo ./ghost_net.sh
 ```
 
 Será exibido um menu interativo:
@@ -76,7 +76,7 @@ Opção **6** → mostra IP público, status da VPN/Tor, iptables ativos e MAC a
 ## ⚡ Instalação global (opcional)
 Para usar o comando `ghost-net` em qualquer lugar:
 ```bash
-sudo mv ghost-net.sh /usr/local/bin/ghost-net
+sudo mv ghost_net.sh /usr/local/bin/ghost-net
 sudo chmod +x /usr/local/bin/ghost-net
 ```
 

@@ -16,11 +16,9 @@ DNS_LIST="1.1.1.1"
 STATE_DIR="/var/run/ghost-net"
 LOG="/var/log/ghost-net.log"
 
-mkdir -p "$STATE_DIR"
-
 log(){ echo "[$(date +'%F %T')] $*" | tee -a "$LOG"; }
 fail(){ log "ERRO: $*"; exit 1; }
-need_root(){ [[ $EUID -eq 0 ]] || fail "Execute como root (sudo)."; }
+need_root(){ [[ $EUID -eq 0 ]] || fail "Execute como root (sudo)."; mkdir -p "$STATE_DIR"; }
 
 # ===== HELPERS =====
 usage_quick(){ cat <<'EOF'
@@ -88,7 +86,7 @@ mac_spoof(){
   log "MAC original de $ifc: $orig"
   nmcli dev set "$ifc" managed no >/dev/null 2>&1 || true
   ip link set "$ifc" down
-  macchanger -r "$ifc" | tee -a "$LOG"
+  macchanger -r "$ifc" 2>&1 | tee -a "$LOG" || log "Aviso: macchanger falhou para $ifc, continuando."
   ip link set "$ifc" up
   nmcli dev set "$ifc" managed yes >/dev/null 2>&1 || true
   # Randomização nas próximas conexões
@@ -188,7 +186,7 @@ start_tor(){
 }
 
 stop_tor(){
-  systemctl stop tor 2>/dev/null || pkill -f "^tor" 2>/dev/null || true
+  systemctl stop tor 2>/dev/null || pkill -x tor 2>/dev/null || true
   log "Tor parado."
 }
 
@@ -260,13 +258,13 @@ ACTION=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     start|stop|status) ACTION="$1"; shift;;
-    --iface) IFACE="${2:-}"; shift 2;;
-    --vpn-config) VPN_CONFIG="${2:-}"; shift 2;;
+    --iface) [[ $# -ge 2 ]] || fail "--iface requer um valor."; IFACE="$2"; shift 2;;
+    --vpn-config) [[ $# -ge 2 ]] || fail "--vpn-config requer um valor."; VPN_CONFIG="$2"; shift 2;;
     --aggressive-clean) AGGRESSIVE=1; shift;;
     --tor-only) TOR_ONLY=1; shift;;
     --vpn-only) VPN_ONLY=1; shift;;
     --no-mac) DO_MAC=0; shift;;
-    --dns) DNS_LIST="${2:-1.1.1.1}"; shift 2;;
+    --dns) [[ $# -ge 2 ]] || fail "--dns requer um valor."; DNS_LIST="$2"; shift 2;;
     --help|-h) usage_quick; exit 0;;
     *) echo "Opção desconhecida: $1"; usage_quick; exit 1;;
   esac
@@ -330,6 +328,7 @@ MENU
     4)
       DO_MAC=1; TOR_ONLY=1; VPN_ONLY=0; AGGRESSIVE=0
       prompt_iface
+      mac_spoof "$IFACE"
       fw_apply_tor_only; start_tor; check_ip; status_all; press_enter;;
     5)
       DO_MAC=1; TOR_ONLY=0; VPN_ONLY=1; AGGRESSIVE=0
